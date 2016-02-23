@@ -1,13 +1,11 @@
-var key = require('../utils/key');
 var sync = require('synchronize');
 var request = require('request');
 var _ = require('underscore');
-
+var https = require('https');
 
 // The Type Ahead API.
 module.exports = function(req, res) {
   var term = req.query.text.trim();
-  // var term = 'everettberry';
   if (!term) {
     res.json([{
       title: '<i>(enter a search term)</i>',
@@ -20,41 +18,31 @@ module.exports = function(req, res) {
   try {
     response = sync.await(request({
       url: 'https://api.github.com/search/repositories',
-      qs: {
-        q: 'user:' + term,
-        // limit: 15,
-        // api_key: key
+      headers: {
+        'user-agent': 'node.js'
       },
-      gzip: true,
+      qs: {
+        q: term,
+      },
       json: true,
+      gzip: true,
       timeout: 10 * 1000
     }, sync.defer()));
   } catch (e) {
-
     res.status(500).send('Error');
     return;
   }
 
-  if (response.statusCode !== 200 || !response.body || !response.body.data) {
+  if (response.statusCode !== 200 || !response.body) {
     res.status(500).send('Error');
     return;
   }
 
-  var results = _.chain(response.body.data)
-    /*
-    .reject(function(image) {
-      return !image || !image.images || !image.images.fixed_height_small;
-    })
-    */
-    .map(function(items) {
+  var results = _.chain(response.body.items)
+    .map(function(item) {
       return {
-        name: items.full_name
-
-        /*
-        title: '<img style="height:75px" src="' + image.images.fixed_height_small.url + '">',
-        text: 'http://giphy.com/' + image.id
-        */
-
+        title: item.full_name,
+        text: item.html_url
       };
     })
     .value();
