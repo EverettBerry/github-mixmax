@@ -1,20 +1,9 @@
 # Giphy Slash Command for Mixmax
 
-This is an open source Mixmax Slash Command. See <http://sdk.mixmax.com/docs/tutorial-giphy-slash-command> for more information about how to use this example code in Mixmax.
+This is a stripped down and slightly rejiggered verison of Brad V's original Giphy Mixmax plugin that I made to play with the API. Here's a GIF:
+
+![alt tag](http://www.epberry.com/Mixmax-RepoSearchAction.gif)
 
 ## Running locally
+You will need to [run chrome in insecure mode](http://sdk.mixmax.com/docs/chrome-insecure-content-https-request-blocked-when-developing-locally) to use this plugin. You can add it to Mixmax to try it out using the following table: ![alt tag](http://www.epberry.com/Mixmax-RepoSearch.png). 
 
-1. Install using `npm install`
-2. Run using `npm start`
-
-To simulate locally how Mixmax calls the typeahead URL (to return a JSON list of typeahead results), run:
-
-```
-curl http://localhost:9145/typeahead?text=cats
-```
-
-To simulate locally how Mixmax calls the resolver URL (to return HTML that goes into the email), run:
-
-```
-curl http://localhost:9145/resolver?text=cats
-```
