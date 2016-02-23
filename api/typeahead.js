@@ -7,6 +7,7 @@ var _ = require('underscore');
 // The Type Ahead API.
 module.exports = function(req, res) {
   var term = req.query.text.trim();
+  // var term = 'everettberry';
   if (!term) {
     res.json([{
       title: '<i>(enter a search term)</i>',
@@ -18,17 +19,18 @@ module.exports = function(req, res) {
   var response;
   try {
     response = sync.await(request({
-      url: 'http://api.giphy.com/v1/gifs/search',
+      url: 'https://api.github.com/search/repositories',
       qs: {
-        q: term,
-        limit: 15,
-        api_key: key
+        q: 'user:' + term,
+        // limit: 15,
+        // api_key: key
       },
       gzip: true,
       json: true,
       timeout: 10 * 1000
     }, sync.defer()));
   } catch (e) {
+
     res.status(500).send('Error');
     return;
   }
@@ -39,13 +41,20 @@ module.exports = function(req, res) {
   }
 
   var results = _.chain(response.body.data)
+    /*
     .reject(function(image) {
       return !image || !image.images || !image.images.fixed_height_small;
     })
-    .map(function(image) {
+    */
+    .map(function(items) {
       return {
+        name: items.full_name
+
+        /*
         title: '<img style="height:75px" src="' + image.images.fixed_height_small.url + '">',
         text: 'http://giphy.com/' + image.id
+        */
+
       };
     })
     .value();
